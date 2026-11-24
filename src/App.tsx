@@ -319,14 +319,15 @@ function Quiz({ setTab, progress, updateProgress }: { setTab: (tab: Tab) => void
   const [selected, setSelected] = useState<number | null>(null)
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
-  const quizQuestions = questions.filter(q => progress.explored.includes(q.sceneId))
+  const tourStarted = progress.explored.some(id => panoScenes.some(s => s.id === id))
+  const quizQuestions = questions
   const total = quizQuestions.length
   const q = quizQuestions[current]!
   const restart = () => { setCurrent(0); setSelected(null); setScore(0); setDone(false) }
 
-  if (!total) return <main className="page quiz-page">
-    <div className="quiz-top"><button className="icon-button" onClick={() => setTab('home')}><Icon name="close" /></button><div><p>Rizal Shrine Quiz</p><strong>0 questions</strong></div></div>
-    <div className="empty-state quiz-empty"><h1>Visit a stop first</h1><p>Every question comes from a place you explored. Open the 360° tour or the shrine stories, then come back.</p><button className="primary full" onClick={() => setTab('tour')}>Start 360° Tour</button></div>
+  if (!tourStarted) return <main className="page quiz-page">
+    <div className="quiz-top"><button className="icon-button" onClick={() => setTab('home')}><Icon name="close" /></button><div><p>Rizal Shrine Quiz</p><strong>10 questions</strong></div></div>
+    <div className="empty-state quiz-empty"><h1>Start the 360° tour first</h1><p>The 10 questions come from the gardens, sala, and dining room inside the Start 360° Tour.</p><button className="primary full" onClick={() => setTab('tour')}>Start 360° Tour</button></div>
   </main>
 
   const choose = (i: number) => { if (selected !== null) return; setSelected(i); if (i === q.answer) setScore(s => s + 1) }
