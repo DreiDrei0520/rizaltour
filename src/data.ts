@@ -315,6 +315,8 @@ export const visitorInfo = {
 }
 
 export type Question = {
+  sceneId: string
+  stop: string
   question: string
   choices: string[]
   answer: number
@@ -322,16 +324,16 @@ export type Question = {
 }
 
 export const questions: Question[] = [
-  { question: 'When was José Rizal born in Calamba?', choices: ['June 19, 1861', 'December 30, 1896', 'June 12, 1898', 'November 30, 1863'], answer: 0, explanation: 'José Rizal was born on June 19, 1861 in Calamba, Laguna.' },
-  { question: 'Who was Rizal’s first teacher?', choices: ['Paciano Rizal', 'Teodora Alonso', 'Francisco Mercado', 'Leonor Rivera'], answer: 1, explanation: 'His mother, Teodora Alonso, first taught him the alphabet, prayers, and values.' },
-  { question: 'How many children were in the Mercado-Rizal family?', choices: ['Seven', 'Nine', 'Eleven', 'Thirteen'], answer: 2, explanation: 'José was the seventh of eleven children.' },
-  { question: 'What does “bahay na bato” literally mean?', choices: ['House of history', 'House of stone', 'House by the lake', 'House of heroes'], answer: 1, explanation: 'Bahay na bato means “house of stone,” referring to its masonry lower level.' },
-  { question: 'Who reconstructed the Calamba house in 1950?', choices: ['Juan F. Nakpil', 'Dudley Diaz', 'Elpidio Quirino', 'Ferdinand Blumentritt'], answer: 0, explanation: 'National Artist Juan F. Nakpil rebuilt the shrine from funds donated by schoolchildren.' },
-  { question: 'What are capiz windows made from?', choices: ['Thin seashell panels', 'Painted paper', 'Stained glass', 'Woven bamboo'], answer: 0, explanation: 'Translucent capiz shell panels diffuse daylight while allowing privacy.' },
-  { question: 'What happened to the original family house?', choices: ['It was moved to Manila', 'It was demolished after the family’s eviction', 'It became a school', 'It was sold abroad'], answer: 1, explanation: 'The Rizal family was evicted in 1890 and the original house later fell into disrepair and was demolished.' },
-  { question: 'Why is the house painted green?', choices: ['It was Rizal’s favorite color', 'To recall the Mercado family name', 'It was required by law', 'It marks a military building'], answer: 1, explanation: 'The NHCP ordered the green repaint in 2009 to highlight the meaning of the surname Mercado.' },
-  { question: 'How many museum galleries does the shrine have?', choices: ['Three', 'Four', 'Six', 'Ten'], answer: 2, explanation: 'The shrine has six galleries, from Kaliwanagan to Pangalawang Paglalakbay sa Europa.' },
-  { question: 'Which province is the Rizal Shrine in?', choices: ['Cavite', 'Batangas', 'Laguna', 'Quezon'], answer: 2, explanation: 'The shrine stands in Calamba City, Laguna, part of CALABARZON.' },
+  { sceneId: 'facade', stop: 'Facade', question: 'Why was the house repainted green in 2009?', choices: ['It was Rizal’s favorite color', 'To recall the meaning of “Mercado”', 'It was required by law', 'To match the red tile roof'], answer: 1, explanation: 'The green paint recalls “Mercado,” the family name that means market.' },
+  { sceneId: 'sides', stop: 'Exterior', question: 'What was the thick stone base of the house mainly for?', choices: ['To display the museum galleries', 'To shade the capiz panels', 'To protect the living quarters from floods, heat, and humidity', 'To hold the four-poster bed'], answer: 2, explanation: 'The masonry ground floor protected the hardwood living quarters above from floods, heat, and humidity.' },
+  { sceneId: 'grounds', stop: 'Gardens 360°', question: 'What did young Pepe use the nipa hut hideaway for?', choices: ['A workshop for observing plants, insects, and birds', 'A classroom for his Ateneo lessons', 'A storage room for the punkah', 'A guest bedroom for visitors'], answer: 0, explanation: 'The small nipa hut in the garden was Pepe’s childhood hideaway and workshop for observing nature.' },
+  { sceneId: 'galleries', stop: 'Galleries 1–3', question: 'Which three galleries are found on the ground floor?', choices: ['Kaliwanagan, Karunungan, Pangalawang Paglalakbay', 'Bahay-na-Bato, Europe, Azotea', 'Sala, Comedor, Silid Kapanganakan', 'Kaliwanagan, Kapaligiran, Karunungan'], answer: 3, explanation: 'The ground floor holds Kaliwanagan, Kapaligiran, and Karunungan.' },
+  { sceneId: 'sala', stop: 'Sala 360°', question: 'What happened in the sala of the Mercado home?', choices: ['Food was cooked and stored', 'Guests were welcomed and Pepe heard stories and debates', 'The family library was kept there', 'Capiz shells were dried there'], answer: 1, explanation: 'The formal sala received relatives and prominent visitors, and young Pepe listened to stories and ideas there.' },
+  { sceneId: 'comedor', stop: 'Dining 360°', question: 'What is the punkah hanging in the comedor?', choices: ['A four-poster bed', 'An original sewing machine', 'A large Indian fan pulled to move air', 'The baptismal certificate'], answer: 2, explanation: 'The punkah is a large rectangular Indian fan that servants pulled to move air during humid meals.' },
+  { sceneId: 'library', stop: 'Library', question: 'Who was Rizal’s first teacher?', choices: ['Teodora Alonso', 'Dudley Diaz', 'Juan F. Nakpil', 'Paciano Rizal'], answer: 0, explanation: 'His mother, Teodora Alonso, taught him his first letters, prayers, and values.' },
+  { sceneId: 'bedrooms', stop: 'Birth Room', question: 'Where and when was José Rizal born?', choices: ['In the boys’ room with Paciano', 'In the girls’ room with his nine sisters', 'In the kitchen beside the azotea', 'In the master bedroom on June 19, 1861'], answer: 3, explanation: 'José was born in the master bedroom, which holds the four-poster bed, on June 19, 1861.' },
+  { sceneId: 'kitchen', stop: 'Kitchen', question: 'Which feature near the azotea survived from the original house?', choices: ['The capiz windows', 'The old well beside the azotea', 'The nipa hut hideaway', 'The bronze statue'], answer: 1, explanation: 'The old well is one of the few surviving features of the original house.' },
+  { sceneId: 'europe', stop: 'Museum', question: 'Which gallery follows Rizal’s first trip to Europe and Noli me tangere?', choices: ['Gallery 3 (Karunungan)', 'Gallery 4 (Bahay-na-Bato)', 'Gallery 5 (first trip to Europe)', 'Gallery 1 (Kaliwanagan)'], answer: 2, explanation: 'Gallery 5 covers his first European journey, from 1882 to 1887, and the writing of Noli me tangere.' },
 ]
 
 export const destinations = [

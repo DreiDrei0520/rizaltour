@@ -4,7 +4,7 @@ import 'pannellum/build/pannellum.css'
 import { destinations, panoScenes, questions, sceneSpots, scenes, storyScenes, visitorInfo, type Pano, type Photo, type Scene, type Spot } from './data'
 
 type Tab = 'home' | 'map' | 'tour' | 'quiz' | 'progress'
-type Progress = { explored: string[]; tourFinished: boolean; quizHistory: { score: number; date: string }[] }
+type Progress = { explored: string[]; tourFinished: boolean; quizHistory: { score: number; total: number; date: string }[] }
 
 const initialProgress: Progress = { explored: [], tourFinished: false, quizHistory: [] }
 
@@ -226,7 +226,7 @@ function Tour({ setTab, progress, updateProgress }: { setTab: (tab: Tab) => void
     const next = panoScenes.findIndex(s => s.id === target.target)
     if (next >= 0) go(next)
   }
-  const finish = () => { updateProgress({ ...progress, tourFinished: true, explored: panoScenes.map(s => s.id) }); setTab('quiz') }
+  const finish = () => { updateProgress({ ...progress, tourFinished: true, explored: [...new Set([...progress.explored, ...panoScenes.map(s => s.id)])] }); setTab('quiz') }
   const toggleFull = () => {
     if (document.fullscreenElement) void document.exitFullscreen()
     else if (tourRef.current) void tourRef.current.requestFullscreen().catch(() => setFullScreen(false))
@@ -309,7 +309,7 @@ function Tour({ setTab, progress, updateProgress }: { setTab: (tab: Tab) => void
     {gallery && <GallerySheet scene={scene} close={() => setGallery(false)} />}
     {miniMap && <MiniMap current={index} onSelect={go} close={() => setMiniMap(false)} />}
     {visitor && <VisitorSheet close={() => setVisitor(false)} />}
-    {chapters && <ChaptersSheet close={() => setChapters(false)} onSelect={s => { setChapters(false); setChapterScene(s) }} />}
+    {chapters && <ChaptersSheet close={() => setChapters(false)} onSelect={s => { setChapters(false); setChapterScene(s); if (!progress.explored.includes(s.id)) updateProgress({ ...progress, explored: [...progress.explored, s.id] }) }} />}
     {chapterScene && <InfoSheet scene={chapterScene} close={() => setChapterScene(null)} />}
   </main>
 }
@@ -319,27 +319,36 @@ function Quiz({ setTab, progress, updateProgress }: { setTab: (tab: Tab) => void
   const [selected, setSelected] = useState<number | null>(null)
   const [score, setScore] = useState(0)
   const [done, setDone] = useState(false)
-  const q = questions[current]
+  const quizQuestions = questions.filter(q => progress.explored.includes(q.sceneId))
+  const total = quizQuestions.length
+  const q = quizQuestions[current]!
+  const restart = () => { setCurrent(0); setSelected(null); setScore(0); setDone(false) }
+
+  if (!total) return <main className="page quiz-page">
+    <div className="quiz-top"><button className="icon-button" onClick={() => setTab('home')}><Icon name="close" /></button><div><p>Rizal Shrine Quiz</p><strong>0 questions</strong></div></div>
+    <div className="empty-state quiz-empty"><h1>Visit a stop first</h1><p>Every question comes from a place you explored. Open the 360° tour or the shrine stories, then come back.</p><button className="primary full" onClick={() => setTab('tour')}>Start 360° Tour</button></div>
+  </main>
+
   const choose = (i: number) => { if (selected !== null) return; setSelected(i); if (i === q.answer) setScore(s => s + 1) }
   const next = () => {
-    if (current === questions.length - 1) {
-      updateProgress({ ...progress, quizHistory: [...progress.quizHistory, { score, date: new Date().toISOString() }] })
+    if (current === total - 1) {
+      updateProgress({ ...progress, quizHistory: [...progress.quizHistory, { score, total, date: new Date().toISOString() }] })
       setDone(true)
     } else { setCurrent(c => c + 1); setSelected(null) }
   }
-  const restart = () => { setCurrent(0); setSelected(null); setScore(0); setDone(false) }
   if (done) {
-    const pct = Math.round(score / questions.length * 100)
-    const badge = score >= 9 ? 'Gold' : score >= 7 ? 'Silver' : 'Bronze'
-    return <main className="page result-page"><div className={`badge-medal ${badge.toLowerCase()}`}><span>★</span><small>{badge}</small></div><p className="kicker">Tour quiz complete</p><h1>Mahusay!</h1><p className="result-message">{score >= 7 ? 'You know the Rizal Shrine well. Keep carrying our stories forward.' : 'A good start! Revisit the rooms and try again when you’re ready.'}</p><div className="score-card"><Ring value={pct} size={126} /><div><strong>{score}<span>/{questions.length}</span></strong><p>correct answers</p><small>Best: {Math.max(score, ...progress.quizHistory.map(h => h.score))}/{questions.length}</small></div></div><div className="result-actions"><button className="primary full" onClick={() => setTab('progress')}>View Progress</button><button className="secondary full" onClick={restart}>Retake Quiz</button><button className="text-button" onClick={() => setTab('tour')}>Back to Tour</button></div></main>
+    const pct = Math.round(score / total * 100)
+    const badge = pct >= 90 ? 'Gold' : pct >= 70 ? 'Silver' : 'Bronze'
+    const bestPct = Math.max(pct, ...progress.quizHistory.map(h => Math.round(h.score / h.total * 100)))
+    return <main className="page result-page"><div className={`badge-medal ${badge.toLowerCase()}`}><span>★</span><small>{badge}</small></div><p className="kicker">Tour quiz complete</p><h1>Mahusay!</h1><p className="result-message">{pct >= 70 ? 'You know the Rizal Shrine well. Keep carrying our stories forward.' : 'A good start! Revisit the rooms and try again when you’re ready.'}</p><div className="score-card"><Ring value={pct} size={126} /><div><strong>{score}<span>/{total}</span></strong><p>correct answers</p><small>Best: {bestPct}%</small></div></div><div className="result-actions"><button className="primary full" onClick={() => setTab('progress')}>View Progress</button><button className="secondary full" onClick={restart}>Retake Quiz</button><button className="text-button" onClick={() => setTab('tour')}>Back to Tour</button></div></main>
   }
   return <main className="page quiz-page">
-    <div className="quiz-top"><button className="icon-button" onClick={() => setTab('home')}><Icon name="close" /></button><div><p>Rizal Shrine Quiz</p><strong>{current + 1} of {questions.length}</strong></div></div>
-    <div className="quiz-progress"><span style={{ width: `${(current + 1) / questions.length * 100}%` }} /></div>
-    <div className="quiz-label">Question {String(current + 1).padStart(2, '0')}</div><h1>{q.question}</h1>
+    <div className="quiz-top"><button className="icon-button" onClick={() => setTab('home')}><Icon name="close" /></button><div><p>Rizal Shrine Quiz</p><strong>{current + 1} of {total}</strong></div></div>
+    <div className="quiz-progress"><span style={{ width: `${(current + 1) / total * 100}%` }} /></div>
+    <div className="quiz-label">{q.stop} · Question {String(current + 1).padStart(2, '0')}</div><h1>{q.question}</h1>
     <div className="choices">{q.choices.map((c, i) => <button key={c} onClick={() => choose(i)} className={selected === null ? '' : i === q.answer ? 'correct' : i === selected ? 'wrong' : 'dim'}><span>{String.fromCharCode(65 + i)}</span>{c}{selected !== null && i === q.answer && <Icon name="check" />}{selected === i && i !== q.answer && <Icon name="close" />}</button>)}</div>
     {selected !== null && <div className={`feedback ${selected === q.answer ? 'right' : 'wrong'}`}><strong>{selected === q.answer ? 'Tama!' : 'Not quite.'}</strong><p>{q.explanation}</p></div>}
-    <button className="primary full quiz-next" disabled={selected === null} onClick={next}>{current === questions.length - 1 ? 'See my results' : 'Next question'} <span>→</span></button>
+    <button className="primary full quiz-next" disabled={selected === null} onClick={next}>{current === total - 1 ? 'See my results' : 'Next question'} <span>→</span></button>
   </main>
 }
 
@@ -347,16 +356,17 @@ function ProgressPage({ setTab, progress, reset }: { setTab: (tab: Tab) => void;
   const [confirm, setConfirm] = useState(false)
   const panoExplored = progress.explored.filter(id => panoScenes.some(s => s.id === id)).length
   const overall = Math.round(((panoExplored / panoScenes.length) * 70) + (progress.quizHistory.length ? 30 : 0))
-  const best = progress.quizHistory.length ? Math.max(...progress.quizHistory.map(h => h.score)) : 0
-  const badge = best >= 9 ? 'Gold Heritage Scholar' : best >= 7 ? 'Silver Story Seeker' : best > 0 ? 'Bronze Explorer' : 'No badge yet'
+  const bestAttempt = progress.quizHistory.reduce<Progress['quizHistory'][number] | null>((best, h) => !best || h.score / h.total > best.score / best.total ? h : best, null)
+  const bestPct = bestAttempt ? Math.round(bestAttempt.score / bestAttempt.total * 100) : 0
+  const badge = bestPct >= 90 ? 'Gold Heritage Scholar' : bestPct >= 70 ? 'Silver Story Seeker' : bestPct > 0 ? 'Bronze Explorer' : 'No badge yet'
   return <main className="page progress-page">
     <Header eyebrow="Your learning journey" title="My Progress" action={<button className="icon-button pale" onClick={() => setConfirm(true)} aria-label="Reset progress"><Icon name="reset" /></button>} />
     <section className="progress-hero"><Ring value={overall} size={118} /><div><span>Overall completion</span><h2>{overall === 100 ? 'Journey complete!' : 'Tuloy lang!'}</h2><p>{panoExplored} 360° stops explored • {progress.quizHistory.length} quiz attempt{progress.quizHistory.length === 1 ? '' : 's'}</p></div></section>
-    <section className="stats-grid"><div><span>360° stops</span><strong>{panoExplored}<small>/{panoScenes.length}</small></strong></div><div><span>Best score</span><strong>{best}<small>/{questions.length}</small></strong></div><div><span>Destinations</span><strong>{progress.tourFinished ? 1 : 0}<small>/1</small></strong></div>
+    <section className="stats-grid"><div><span>360° stops</span><strong>{panoExplored}<small>/{panoScenes.length}</small></strong></div><div><span>Best score</span><strong>{bestAttempt ? bestAttempt.score : 0}<small>/{bestAttempt ? bestAttempt.total : questions.length}</small></strong></div><div><span>Destinations</span><strong>{progress.tourFinished ? 1 : 0}<small>/1</small></strong></div>
 </section>
     <section><div className="section-heading"><h2>Destinations</h2><button onClick={() => setTab('map')}>View map</button></div><div className="progress-destination"><img src="/assets/tour/exterior-front-2023.jpg" alt="" /><div><span>Laguna</span><h3>Rizal Shrine</h3><div className="slim-progress"><i style={{ width: `${panoExplored / panoScenes.length * 100}%` }} /></div><p>{progress.tourFinished ? 'Completed' : panoExplored ? 'In progress' : 'Not started'} • {panoExplored}/{panoScenes.length} 360° stops</p></div><Icon name={progress.tourFinished ? 'check' : 'arrow'} /></div></section>
-    <section><div className="section-heading"><h2>Earned badge</h2></div><div className="badge-card"><div className={`mini-medal ${best >= 9 ? 'gold' : best >= 7 ? 'silver' : 'bronze'}`}>★</div><div><h3>{badge}</h3><p>{best ? `Awarded for your ${best}/${questions.length} quiz score.` : 'Complete the quiz to earn your first badge.'}</p></div></div></section>
-    <section><div className="section-heading"><h2>Quiz history</h2></div>{progress.quizHistory.length ? <div className="history-list">{[...progress.quizHistory].reverse().map((h, i) => <div key={i}><span>{new Date(h.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</span><strong>{h.score}/{questions.length}</strong></div>)}</div> : <div className="empty-state">Your quiz attempts will appear here.</div>}</section>
+    <section><div className="section-heading"><h2>Earned badge</h2></div><div className="badge-card"><div className={`mini-medal ${bestPct >= 90 ? 'gold' : bestPct >= 70 ? 'silver' : 'bronze'}`}>★</div><div><h3>{badge}</h3><p>{bestAttempt ? `Awarded for your ${bestAttempt.score}/${bestAttempt.total} quiz score.` : 'Complete the quiz to earn your first badge.'}</p></div></div></section>
+    <section><div className="section-heading"><h2>Quiz history</h2></div>{progress.quizHistory.length ? <div className="history-list">{[...progress.quizHistory].reverse().map((h, i) => <div key={i}><span>{new Date(h.date).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</span><strong>{h.score}/{h.total}</strong></div>)}</div> : <div className="empty-state">Your quiz attempts will appear here.</div>}</section>
     {confirm && <div className="modal-backdrop"><div className="confirm-dialog"><div className="warning"><Icon name="reset" /></div><h2>Reset your journey?</h2><p>This will remove explored rooms, quiz scores, and badges from this device.</p><button className="danger full" onClick={() => { reset(); setConfirm(false) }}>Yes, reset progress</button><button className="text-button" onClick={() => setConfirm(false)}>Keep my progress</button></div></div>}
   </main>
 }
