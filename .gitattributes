@@ -1,0 +1,7 @@
+* text=auto
+*.png -text -diff
+*.jpg -text -diff
+*.jpeg -text -diff
+*.gif -text -diff
+*.ico -text -diff
+*.webp -text -diff

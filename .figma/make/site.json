@@ -1,0 +1,11 @@
+{
+  "title": "Rizal Shrine Virtual Tour",
+  "description": "Explore the Rizal Shrine in Calamba through an interactive 360° virtual tour, photo stories, and a history quiz.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
