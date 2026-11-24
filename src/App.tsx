@@ -114,6 +114,13 @@ function Icon({ name, size = 21 }: { name: string; size?: number }) {
         <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
       </>
     ),
+    download: (
+      <>
+        <path d="M12 3v12" />
+        <path d="m7 10 5 5 5-5" />
+        <path d="M4 20h16" />
+      </>
+    ),
   };
   return (
     <svg
@@ -210,6 +217,14 @@ function Home({
           <button className="primary light" onClick={() => setTab("tour")}>
             <Icon name="compass" /> Start 360° Tour
           </button>
+          <a
+            className="apk-download"
+            href={settings.apkDownloadUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Icon name="download" size={16} /> Download Android APK
+          </a>
         </div>
       </section>
       <section className="intro-row">

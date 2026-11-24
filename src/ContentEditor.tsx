@@ -548,14 +548,27 @@ export default function ContentEditor({
               This project is a web app wrapped with Capacitor so the same screens can run as an
               APK.
             </p>
+            <Field label="Download URL" hint="Change this if you host the APK somewhere else.">
+              <input
+                value={content.settings.apkDownloadUrl}
+                onChange={(e) => patchSettings({ apkDownloadUrl: e.target.value })}
+              />
+            </Field>
+            <a
+              className="primary full"
+              href={content.settings.apkDownloadUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ textDecoration: "none" }}
+            >
+              Download APK
+            </a>
             <ol className="editor-steps">
               <li>
-                Run the <strong>Build Android APK</strong> GitHub Action; it installs dependencies,
-                builds the web app, syncs Capacitor, and compiles the APK.
+                The <strong>Build Android APK</strong> workflow publishes the latest build to this
+                repo’s latest release.
               </li>
-              <li>
-                Download the APK from the workflow artifact and install it on an Android phone.
-              </li>
+              <li>Open the link above on your Android phone and install the downloaded APK.</li>
               <li>
                 Open the Content studio in the app and use <strong>Import JSON</strong> to load your
                 exported questions and details.

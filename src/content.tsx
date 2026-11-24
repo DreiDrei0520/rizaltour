@@ -26,6 +26,7 @@ export type AppSettings = {
   shuffleChoices: boolean;
   passingPercent: number;
   requireTour: boolean;
+  apkDownloadUrl: string;
 };
 
 export type Destination = (typeof defaultDestinations)[number];
@@ -57,6 +58,8 @@ export const defaultContent: AppContent = {
     shuffleChoices: true,
     passingPercent: 70,
     requireTour: true,
+    apkDownloadUrl:
+      "https://github.com/DreiDrei0520/rizaltour/releases/latest/download/rizal-virtual-tour.apk",
   },
   destinations: defaultDestinations,
   scenes: defaultScenes,
