@@ -575,7 +575,7 @@ export default function ContentEditor({
               </li>
             </ol>
             <p className="editor-note">
-              For a local build you need Android Studio, Java 17, and the Android SDK, then run:{" "}
+              For a local build you need Android Studio, Java 21, and the Android SDK, then run:{" "}
               <code>npm run apk:debug</code>.
             </p>
           </article>
