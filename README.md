@@ -19,7 +19,17 @@ The deployed web app is **view-only**: questions, details, and other tour conten
 
 ### Direct APK download
 
-The web app serves the Android installer directly from `public/downloads/rizal-virtual-tour.apk`. The **Download APK** button in the hero uses `/downloads/rizal-virtual-tour.apk`, so it downloads the file from Vercel without opening GitHub. Replace that file with a newer build and redeploy to update the download.
+The web app serves the native Expo Android app directly from `public/downloads/rizal-virtual-tour.apk`. The **Download Expo APK** button in the hero uses `/downloads/rizal-virtual-tour.apk`, so it downloads the Expo-built APK from Vercel without opening GitHub.
+
+The APK is built from `expo-app/` with Expo Build (package `ph.rizal.virtualtour.expo`), not from the Vite/Capacitor web APK. Rebuild and replace it when the Expo app changes:
+
+```bash
+cd expo-app
+npx eas-cli@latest build -p android --profile preview
+npx eas-cli@latest build:download --build-id <build-id>
+```
+
+Copy the downloaded `.apk` to `public/downloads/rizal-virtual-tour.apk`, then redeploy.
 
 ## Expo Go guide
 

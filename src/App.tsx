@@ -212,7 +212,7 @@ function Home({
             <Icon name="compass" /> Start 360° Tour
           </button>
           <a className="apk-download" href="/downloads/rizal-virtual-tour.apk" download>
-            <Icon name="download" /> Download APK
+            <Icon name="download" /> Download Expo APK
           </a>
         </div>
       </section>

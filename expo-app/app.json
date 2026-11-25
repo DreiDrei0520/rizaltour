@@ -23,6 +23,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-status-bar", "expo-font"]
+    "plugins": ["expo-router", "expo-status-bar", "expo-font"],
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "8be7eb95-56cf-4f06-8e8b-cac3ed0a2f4b"
+      }
+    },
+    "owner": "deyilangg028"
   }
 }
