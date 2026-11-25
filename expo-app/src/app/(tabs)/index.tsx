@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Alert, Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useApp } from "@/AppContext";
@@ -46,7 +47,7 @@ export default function HomeScreen() {
           </View>
         </View>
         <Pressable onPress={() => router.push("/editor")} style={styles.editButton}>
-          <FontAwesome name="sliders" size={16} color={theme.green} />
+          <FontAwesome name="sliders" size={16} color={theme.primary} />
           <Text style={styles.editText}>Edit</Text>
         </Pressable>
       </View>
@@ -57,10 +58,16 @@ export default function HomeScreen() {
           style={styles.heroImage}
           resizeMode="cover"
         />
-        <View style={styles.heroShade} />
+        <LinearGradient
+          colors={["rgba(0,0,0,0.04)", "rgba(38,17,9,0.91)"]}
+          locations={[0.25, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.heroShade}
+        />
         <View style={styles.heroContent}>
           <View style={styles.locationPill}>
-            <FontAwesome name="map-marker" size={12} color={theme.green} />
+            <FontAwesome name="map-marker" size={12} color="#fff" />
             <Text style={styles.locationText}>{settings.location}</Text>
           </View>
           <Text style={styles.heroTitle}>{settings.heroTitle}</Text>
@@ -100,10 +107,11 @@ export default function HomeScreen() {
             <Text style={styles.destinationCodeText}>{destination.code}</Text>
           </View>
           <View style={styles.destinationCopy}>
+            <Text style={styles.destinationLabel}>{destination.province}</Text>
             <Text style={styles.cardTitle}>{destination.place}</Text>
-            <Text style={styles.body}>{destination.province}</Text>
+            <Text style={styles.body}>{destination.status}</Text>
           </View>
-          <FontAwesome name="chevron-right" size={16} color={theme.green} />
+          <FontAwesome name="chevron-right" size={16} color={theme.primary} />
         </Pressable>
       ))}
     </Screen>
@@ -115,74 +123,143 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: 18,
   },
   brand: { flexDirection: "row", alignItems: "center", gap: 10 },
   avatar: {
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: theme.green,
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
   },
-  avatarText: { color: "#fff", fontWeight: "700" },
-  kicker: { fontSize: 10, color: theme.muted, letterSpacing: 1 },
-  brandName: { fontSize: 16, fontWeight: "700", color: theme.green },
+  avatarText: { fontFamily: theme.fontDisplay, color: "#fff", fontWeight: "700", fontSize: 16 },
+  kicker: {
+    fontFamily: theme.fontBody,
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 1.6,
+    textTransform: "uppercase",
+    color: theme.primary,
+  },
+  brandName: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 20,
+    fontWeight: "700",
+    color: theme.ink,
+  },
   editButton: { flexDirection: "row", alignItems: "center", gap: 6, padding: 8 },
-  editText: { color: theme.green, fontWeight: "600" },
-  hero: { borderRadius: 22, overflow: "hidden", backgroundColor: theme.green, marginBottom: 22 },
-  heroImage: { width: "100%", height: 270 },
-  heroShade: { ...StyleSheet.absoluteFill, backgroundColor: "rgba(9,35,26,0.62)" },
-  heroContent: { position: "absolute", left: 18, right: 18, bottom: 18 },
+  editText: { fontFamily: theme.fontBody, color: theme.primary, fontWeight: "700", fontSize: 12 },
+  hero: {
+    borderRadius: 26,
+    overflow: "hidden",
+    backgroundColor: theme.primary,
+    marginBottom: 22,
+    shadowColor: "#4c2d20",
+    shadowOpacity: 0.19,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 9 },
+    elevation: 5,
+  },
+  heroImage: { width: "100%", height: 470 },
+  heroShade: { ...StyleSheet.absoluteFill },
+  heroContent: { position: "absolute", left: 22, right: 22, bottom: 24 },
   locationPill: {
     alignSelf: "flex-start",
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: theme.paper,
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginBottom: 10,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    borderRadius: 999,
+    paddingHorizontal: 11,
+    paddingVertical: 7,
+    marginBottom: 13,
   },
-  locationText: { color: theme.green, fontSize: 11, fontWeight: "600" },
-  heroTitle: { color: "#fff", fontSize: 26, lineHeight: 31, fontWeight: "800", marginBottom: 8 },
-  heroText: { color: "#e8efe9", fontSize: 13, lineHeight: 19, marginBottom: 12 },
+  locationText: {
+    fontFamily: theme.fontBody,
+    color: "#fff",
+    fontSize: 10,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
+  heroTitle: {
+    fontFamily: theme.fontDisplay,
+    color: "#fff",
+    fontSize: 34,
+    lineHeight: 36,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  heroText: {
+    fontFamily: theme.fontBody,
+    color: "rgba(255,249,235,0.85)",
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 17,
+  },
   ring: {
-    width: 76,
-    height: 76,
-    borderRadius: 38,
+    width: 78,
+    height: 78,
+    borderRadius: 39,
     borderWidth: 6,
     borderColor: theme.gold,
+    backgroundColor: theme.cream,
     alignItems: "center",
     justifyContent: "center",
   },
-  ringNumber: { fontSize: 19, fontWeight: "800", color: theme.green },
-  ringLabel: { fontSize: 10, color: theme.muted },
+  ringNumber: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 19,
+    fontWeight: "700",
+    color: theme.primary,
+  },
+  ringLabel: { fontFamily: theme.fontBody, fontSize: 10, color: theme.muted },
   introRow: { flexDirection: "row", gap: 16, alignItems: "center" },
   introCopy: { flex: 1 },
-  cardTitle: { fontSize: 15, fontWeight: "700", color: theme.ink, marginBottom: 4 },
-  body: { fontSize: 13, color: theme.muted, lineHeight: 19 },
+  cardTitle: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 15,
+    fontWeight: "700",
+    color: theme.ink,
+    marginBottom: 3,
+  },
+  destinationLabel: {
+    fontFamily: theme.fontBody,
+    fontSize: 9,
+    fontWeight: "700",
+    letterSpacing: 1.1,
+    textTransform: "uppercase",
+    color: theme.primary,
+    marginBottom: 3,
+  },
+  body: { fontFamily: theme.fontBody, fontSize: 13, color: theme.muted, lineHeight: 19 },
   destination: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: theme.paper,
+    backgroundColor: "#fffaf2",
     borderWidth: 1,
     borderColor: theme.line,
-    borderRadius: 14,
-    padding: 12,
+    borderRadius: 18,
+    padding: 9,
     marginBottom: 10,
+    minHeight: 85,
   },
   destinationCode: {
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: theme.green,
+    width: 68,
+    height: 66,
+    borderRadius: 12,
+    backgroundColor: "#988469",
     alignItems: "center",
     justifyContent: "center",
   },
-  destinationCodeText: { color: "#fff", fontWeight: "700" },
+  destinationCodeText: {
+    fontFamily: theme.fontDisplay,
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "700",
+  },
   destinationCopy: { flex: 1 },
 });

@@ -234,6 +234,22 @@ h3 {
   color: #fff9ebd9;
   max-width: 320px;
 }
+.apk-download {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 20px;
+  border: 1px solid #ffffff80;
+  border-radius: 14px;
+  background: #ffffff1f;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
 .location-pill {
   display: inline-flex;
   border-radius: 999px;

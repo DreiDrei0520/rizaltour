@@ -1,4 +1,5 @@
 import { Alert, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useApp } from "@/AppContext";
 import { Button, Card, Screen, SectionTitle, theme } from "@/components/ui";
 
@@ -26,11 +27,20 @@ export default function ProgressScreen() {
       <SectionTitle title="Your progress" subtitle="Stops explored and quiz results" />
 
       <Card style={styles.hero}>
-        <Text style={styles.percent}>{overall}%</Text>
-        <Text style={styles.percentLabel}>overall completion</Text>
-        <View style={styles.bar}>
-          <View style={[styles.barFill, { width: `${overall}%` }]} />
-        </View>
+        <LinearGradient
+          colors={["#7a1f2b", "#56121d"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.heroFill}
+        >
+          <View style={styles.ring}>
+            <Text style={styles.percent}>{overall}%</Text>
+          </View>
+          <Text style={styles.percentLabel}>overall completion</Text>
+          <View style={styles.bar}>
+            <View style={[styles.barFill, { width: `${overall}%` }]} />
+          </View>
+        </LinearGradient>
       </Card>
 
       <Card>
@@ -88,14 +98,41 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 const styles = StyleSheet.create({
-  hero: { alignItems: "center" },
-  percent: { fontSize: 42, fontWeight: "800", color: theme.green },
-  percentLabel: { fontSize: 12, color: theme.muted, marginBottom: 12 },
+  hero: {
+    padding: 0,
+    overflow: "hidden",
+    borderColor: theme.primary,
+    backgroundColor: theme.primary,
+  },
+  heroFill: { alignItems: "center", padding: 20 },
+  ring: {
+    width: 128,
+    height: 128,
+    borderRadius: 64,
+    borderWidth: 10,
+    borderColor: theme.gold,
+    backgroundColor: "rgba(255,250,240,0.08)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  percent: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 40,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  percentLabel: {
+    fontFamily: theme.fontBody,
+    fontSize: 12,
+    color: theme.cream,
+    marginBottom: 12,
+  },
   bar: {
     width: "100%",
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: theme.line,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "rgba(255,250,240,0.25)",
     overflow: "hidden",
   },
   barFill: { height: "100%", backgroundColor: theme.gold },
@@ -106,8 +143,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: theme.line,
   },
-  statValue: { fontSize: 14, fontWeight: "700", color: theme.green },
-  body: { fontSize: 13, color: theme.muted },
+  statValue: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 18,
+    fontWeight: "700",
+    color: theme.primary,
+  },
+  body: { fontFamily: theme.fontBody, fontSize: 13, color: theme.muted },
   historyRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  historyScore: { fontSize: 18, fontWeight: "800", color: theme.green },
+  historyScore: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 24,
+    fontWeight: "700",
+    color: theme.primary,
+  },
 });

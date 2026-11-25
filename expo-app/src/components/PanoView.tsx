@@ -21,17 +21,17 @@ function buildHtml(faces: string[], spots: Spot[], preview?: string) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.7/build/pannellum.css" />
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.7/build/pannellum.js"></script>
     <style>
-      html, body, #panorama { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #0b2318; }
+      html, body, #panorama { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #120b07; }
       .pnlm-load-box p { color: #fff; }
       .rn-hotspot { display: flex; flex-direction: column; align-items: center; }
       .rn-hotspot .dot {
-        width: 26px; height: 26px; border-radius: 50%; background: #d9a441;
+        width: 26px; height: 26px; border-radius: 50%; background: #c9a227;
         border: 2px solid #fff; color: #fff; font: 700 15px/22px sans-serif; text-align: center;
         box-shadow: 0 2px 8px rgba(0,0,0,0.35);
       }
       .rn-hotspot small {
         margin-top: 3px; max-width: 120px; padding: 2px 6px; border-radius: 6px;
-        background: rgba(9,35,26,0.8); color: #fff; font: 700 10px sans-serif;
+        background: rgba(18,11,7,0.82); color: #fff; font: 700 10px sans-serif;
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
       }
     </style>
@@ -118,8 +118,8 @@ export function PanoView({ faces, preview, spots, onSpot }: PanoViewProps) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0b2318" },
-  webview: { flex: 1, backgroundColor: "#0b2318" },
+  container: { flex: 1, backgroundColor: "#120b07" },
+  webview: { flex: 1, backgroundColor: "#120b07" },
   loading: { ...StyleSheet.absoluteFill, alignItems: "center", justifyContent: "center", gap: 10 },
-  loadingText: { color: "#fff", fontSize: 12 },
+  loadingText: { fontFamily: "Inter", color: "#fff", fontSize: 12 },
 });

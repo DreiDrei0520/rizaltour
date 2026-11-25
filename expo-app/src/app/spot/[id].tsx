@@ -52,5 +52,5 @@ export default function SpotScreen() {
 
 const styles = StyleSheet.create({
   photo: { width: "100%", height: 190, borderRadius: 12, marginBottom: 12 },
-  body: { fontSize: 14, color: theme.muted, lineHeight: 21 },
+  body: { fontFamily: theme.fontBody, fontSize: 14, color: theme.muted, lineHeight: 21 },
 });

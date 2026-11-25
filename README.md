@@ -17,6 +17,10 @@ The deployed web app is **view-only**: questions, details, and other tour conten
 
 `vercel.json` configures Vercel to install with pnpm, run `npm run build`, and serve `dist/`.
 
+### Direct APK download
+
+The web app serves the Android installer directly from `public/downloads/rizal-virtual-tour.apk`. The **Download APK** button in the hero uses `/downloads/rizal-virtual-tour.apk`, so it downloads the file from Vercel without opening GitHub. Replace that file with a newer build and redeploy to update the download.
+
 ## Expo Go guide
 
 ### 1. I-install ang Expo Go sa phone

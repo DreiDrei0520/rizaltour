@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useApp } from "@/AppContext";
@@ -59,14 +61,20 @@ export default function TourScreen() {
   };
 
   return (
-    <Screen scroll={false} padded={false}>
+    <Screen scroll={false} padded={false} tone="dark">
+      <StatusBar style="light" />
       <View style={styles.topBar}>
         <Pressable onPress={() => router.push("/")} style={styles.iconButton}>
           <FontAwesome name="arrow-left" size={18} color="#fff" />
         </Pressable>
-        <Text style={styles.topTitle}>
-          {scene.shortTitle} · stop {index + 1} of {content.scenes.length}
-        </Text>
+        <View style={styles.topCopy}>
+          <Text style={styles.topKicker}>
+            Stop {index + 1} of {content.scenes.length}
+          </Text>
+          <Text style={styles.topTitle} numberOfLines={1}>
+            {scene.shortTitle}
+          </Text>
+        </View>
         <Pressable onPress={() => router.push(`/stop/${scene.id}`)} style={styles.iconButton}>
           <FontAwesome name="info" size={18} color="#fff" />
         </Pressable>
@@ -88,7 +96,12 @@ export default function TourScreen() {
               style={styles.image}
               resizeMode="cover"
             />
-            <View style={styles.stageShade} />
+            <LinearGradient
+              colors={["rgba(22,13,8,0)", "rgba(22,13,8,0.91)"]}
+              start={{ x: 0.5, y: 0.35 }}
+              end={{ x: 0.5, y: 1 }}
+              style={styles.stageShade}
+            />
 
             {spots.map((spot) => (
               <Pressable
@@ -132,7 +145,7 @@ export default function TourScreen() {
         <View style={styles.navRow}>
           <Button
             label="Previous"
-            variant="ghost"
+            variant="glass"
             onPress={() =>
               setIndex((current) => (current - 1 + content.scenes.length) % content.scenes.length)
             }
@@ -147,7 +160,7 @@ export default function TourScreen() {
           <View style={styles.toggleRow}>
             <Button
               label={use360 ? "Use classic view" : "Use 360° view"}
-              variant="ghost"
+              variant="glass"
               onPress={() => setUse360((current) => !current)}
             />
           </View>
@@ -196,29 +209,44 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
+    gap: 12,
+    paddingHorizontal: 18,
     paddingTop: 12,
     paddingBottom: 10,
   },
   iconButton: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: theme.green,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: theme.primary,
     alignItems: "center",
     justifyContent: "center",
   },
-  topTitle: { color: "#fff", fontWeight: "700", fontSize: 13 },
+  topCopy: { flex: 1 },
+  topKicker: {
+    fontFamily: theme.fontBody,
+    color: theme.gold,
+    fontSize: 8,
+    fontWeight: "700",
+    letterSpacing: 1.6,
+    textTransform: "uppercase",
+  },
+  topTitle: {
+    fontFamily: theme.fontDisplay,
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+    marginTop: 2,
+  },
   stage: {
     height: 330,
     marginHorizontal: 12,
-    borderRadius: 20,
+    borderRadius: 26,
     overflow: "hidden",
-    backgroundColor: theme.green,
+    backgroundColor: theme.primary,
   },
   image: { width: "100%", height: "100%" },
-  stageShade: { ...StyleSheet.absoluteFill, backgroundColor: "rgba(0,0,0,0.08)" },
+  stageShade: { ...StyleSheet.absoluteFill },
   hotspot: { position: "absolute", alignItems: "center" },
   hotspotDot: {
     width: 30,
@@ -231,11 +259,12 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
   },
   hotspotLabel: {
+    fontFamily: theme.fontBody,
     marginTop: 3,
     color: "#fff",
     fontSize: 10,
     fontWeight: "700",
-    backgroundColor: "rgba(9,35,26,0.75)",
+    backgroundColor: "rgba(22,13,8,0.78)",
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 6,
@@ -247,7 +276,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "rgba(9,35,26,0.7)",
+    backgroundColor: "rgba(22,13,8,0.72)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -257,29 +286,45 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 12,
     bottom: 12,
-    backgroundColor: "rgba(9,35,26,0.78)",
+    backgroundColor: "rgba(22,13,8,0.78)",
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
-  viewText: { color: "#fff", fontSize: 12, fontWeight: "700" },
-  viewCaption: { color: "#e8efe9", fontSize: 10, maxWidth: 260 },
-  controls: { paddingHorizontal: 16, paddingTop: 12 },
+  viewText: { fontFamily: theme.fontBody, color: "#fff", fontSize: 12, fontWeight: "700" },
+  viewCaption: {
+    fontFamily: theme.fontBody,
+    color: "rgba(255,249,235,0.85)",
+    fontSize: 10,
+    maxWidth: 260,
+  },
+  controls: { paddingHorizontal: 18, paddingTop: 12 },
   navRow: { flexDirection: "row", gap: 10 },
-  toggleRow: { marginTop: 10 },
+  toggleRow: { marginTop: 2 },
   chips: { marginTop: 4 },
   chip: {
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 18,
-    backgroundColor: theme.paper,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.12)",
     borderWidth: 1,
-    borderColor: theme.line,
+    borderColor: "rgba(255,255,255,0.28)",
     marginRight: 8,
   },
-  chipActive: { backgroundColor: theme.green, borderColor: theme.green },
-  chipText: { color: theme.green, fontSize: 12, fontWeight: "600" },
-  chipTextActive: { color: "#fff" },
-  hint: { color: theme.muted, fontSize: 12, textAlign: "center", marginVertical: 10 },
-  remaining: { color: theme.muted, fontSize: 12, textAlign: "center" },
+  chipActive: { backgroundColor: theme.primary, borderColor: theme.primary },
+  chipText: { fontFamily: theme.fontBody, color: "#fff", fontSize: 10, fontWeight: "700" },
+  chipTextActive: { color: theme.gold },
+  hint: {
+    fontFamily: theme.fontBody,
+    color: "rgba(255,249,235,0.75)",
+    fontSize: 12,
+    textAlign: "center",
+    marginVertical: 10,
+  },
+  remaining: {
+    fontFamily: theme.fontBody,
+    color: "rgba(255,249,235,0.75)",
+    fontSize: 12,
+    textAlign: "center",
+  },
 });

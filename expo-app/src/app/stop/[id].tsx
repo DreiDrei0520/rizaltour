@@ -64,11 +64,18 @@ export default function StopScreen() {
 
 const styles = StyleSheet.create({
   cover: { width: "100%", height: 190, borderRadius: 18, marginTop: 16 },
-  body: { fontSize: 13, color: theme.muted, lineHeight: 19 },
-  label: { fontSize: 12, fontWeight: "700", color: theme.green, marginTop: 12, marginBottom: 4 },
+  body: { fontFamily: theme.fontBody, fontSize: 13, color: theme.muted, lineHeight: 19 },
+  label: {
+    fontFamily: theme.fontBody,
+    fontSize: 12,
+    fontWeight: "700",
+    color: theme.primary,
+    marginTop: 12,
+    marginBottom: 4,
+  },
   detail: { flexDirection: "row", gap: 8, marginBottom: 8 },
   bullet: { color: theme.gold, fontSize: 16 },
   photo: { width: "100%", height: 180, borderRadius: 12 },
-  caption: { fontSize: 12, color: theme.ink, marginTop: 8 },
-  credit: { fontSize: 10, color: theme.muted, marginTop: 3 },
+  caption: { fontFamily: theme.fontBody, fontSize: 12, color: theme.ink, marginTop: 8 },
+  credit: { fontFamily: theme.fontBody, fontSize: 10, color: theme.muted, marginTop: 3 },
 });

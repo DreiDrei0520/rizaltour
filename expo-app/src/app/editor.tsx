@@ -282,14 +282,21 @@ function Toggle({
 
 const styles = StyleSheet.create({
   field: { marginBottom: 12 },
-  label: { fontSize: 12, fontWeight: "700", color: theme.ink, marginBottom: 5 },
+  label: {
+    fontFamily: theme.fontBody,
+    fontSize: 12,
+    fontWeight: "700",
+    color: theme.ink,
+    marginBottom: 5,
+  },
   input: {
-    backgroundColor: theme.cream,
+    backgroundColor: "#fffdf8",
     borderWidth: 1,
     borderColor: theme.line,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 9,
+    fontFamily: theme.fontBody,
     fontSize: 13,
     color: theme.ink,
   },
@@ -301,5 +308,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   questionHead: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  questionNumber: { fontSize: 15, fontWeight: "800", color: theme.green },
+  questionNumber: {
+    fontFamily: theme.fontBody,
+    fontSize: 15,
+    fontWeight: "800",
+    color: theme.primary,
+  },
 });

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { router } from "expo-router";
 import { useApp } from "@/AppContext";
 import { buildQuiz } from "@/content";
@@ -91,27 +91,55 @@ export default function QuizScreen() {
         subtitle={`Question ${index + 1} of ${items.length} · ${item.source.stop}`}
       />
 
+      <View style={styles.progressTrack}>
+        <View
+          style={[
+            styles.progressFill,
+            { width: `${((index + (selected === null ? 0 : 1)) / items.length) * 100}%` },
+          ]}
+        />
+      </View>
+
       <Card>
         <Text style={styles.question}>{item.source.question}</Text>
 
         {item.choices.map((choice, choiceIndex) => {
           const correct = choiceIndex === item.answer;
+          const chosen = selected === choiceIndex;
+          const answerState =
+            selected === null
+              ? styles.choice
+              : correct
+                ? styles.choiceCorrect
+                : chosen
+                  ? styles.choiceWrong
+                  : styles.choiceDim;
           return (
-            <Button
+            <Pressable
               key={`${choice}-${choiceIndex}`}
-              label={choice}
-              variant="ghost"
               onPress={() => {
                 if (selected !== null) return;
                 setSelected(choiceIndex);
                 if (correct) setScore((value) => value + 1);
               }}
-            />
+              style={({ pressed }) => [styles.choiceBase, answerState, pressed && styles.pressed]}
+            >
+              <Text
+                style={[
+                  styles.choiceLetter,
+                  correct && selected !== null && styles.choiceLetterGood,
+                  chosen && !correct && styles.choiceLetterBad,
+                ]}
+              >
+                {String.fromCharCode(65 + choiceIndex)}
+              </Text>
+              <Text style={styles.choiceText}>{choice}</Text>
+            </Pressable>
           );
         })}
 
         {selected !== null ? (
-          <View style={styles.feedback}>
+          <View style={[styles.feedback, isCorrect ? styles.feedbackGood : styles.feedbackBad]}>
             <Text style={[styles.feedbackTitle, isCorrect ? styles.good : styles.bad]}>
               {isCorrect ? "Correct!" : "Not quite"}
             </Text>
@@ -139,17 +167,86 @@ export default function QuizScreen() {
 }
 
 const styles = StyleSheet.create({
-  body: { fontSize: 13, color: theme.muted, lineHeight: 19 },
-  question: { fontSize: 17, fontWeight: "700", color: theme.ink, lineHeight: 24, marginBottom: 16 },
-  choice: { marginBottom: 2 },
-  choiceSelected: { borderColor: theme.green },
-  choiceCorrect: { backgroundColor: "#e2f2e8", borderColor: theme.greenLight },
-  choiceWrong: { backgroundColor: "#f7e4e1", borderColor: theme.danger },
-  feedback: { marginTop: 12, marginBottom: 12 },
-  feedbackTitle: { fontSize: 15, fontWeight: "700", marginBottom: 4 },
-  good: { color: theme.green },
-  bad: { color: theme.danger },
+  body: { fontFamily: theme.fontBody, fontSize: 13, color: theme.muted, lineHeight: 19 },
+  progressTrack: {
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: theme.line,
+    overflow: "hidden",
+    marginBottom: 12,
+  },
+  progressFill: { height: "100%", backgroundColor: theme.gold },
+  question: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 28,
+    fontWeight: "700",
+    color: theme.ink,
+    lineHeight: 34,
+    marginBottom: 16,
+  },
+  choiceBase: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    minHeight: 60,
+    borderRadius: 16,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 10,
+    backgroundColor: "#fffdf8",
+  },
+  choice: { borderColor: theme.line },
+  choiceCorrect: { borderColor: theme.success, backgroundColor: theme.successBg },
+  choiceWrong: { borderColor: "#a33c3c", backgroundColor: theme.dangerBg },
+  choiceDim: { borderColor: theme.line, backgroundColor: "#fffaf2", opacity: 0.6 },
+  pressed: { opacity: 0.82 },
+  choiceLetter: {
+    fontFamily: theme.fontBody,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "#f1e7d4",
+    color: theme.primary,
+    fontSize: 14,
+    fontWeight: "700",
+    textAlign: "center",
+    lineHeight: 34,
+  },
+  choiceLetterGood: { backgroundColor: theme.success, color: "#fff" },
+  choiceLetterBad: { backgroundColor: "#a33c3c", color: "#fff" },
+  choiceText: {
+    fontFamily: theme.fontBody,
+    flex: 1,
+    fontSize: 13,
+    fontWeight: "600",
+    color: theme.ink,
+  },
+  feedback: {
+    borderLeftWidth: 4,
+    borderRadius: 14,
+    padding: 12,
+    marginTop: 2,
+    marginBottom: 12,
+  },
+  feedbackGood: { borderLeftColor: theme.success, backgroundColor: theme.successBg },
+  feedbackBad: { borderLeftColor: "#a33c3c", backgroundColor: theme.dangerBg },
+  feedbackTitle: { fontFamily: theme.fontBody, fontSize: 15, fontWeight: "700", marginBottom: 4 },
+  good: { color: "#285431" },
+  bad: { color: "#792626" },
   resultCard: { alignItems: "center" },
-  medal: { fontSize: 30, fontWeight: "800", color: theme.gold, marginBottom: 4 },
-  score: { fontSize: 22, fontWeight: "700", color: theme.green, marginBottom: 8 },
+  medal: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 30,
+    fontWeight: "700",
+    color: theme.gold,
+    marginBottom: 4,
+  },
+  score: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 40,
+    fontWeight: "700",
+    color: theme.primary,
+    marginBottom: 8,
+  },
 });

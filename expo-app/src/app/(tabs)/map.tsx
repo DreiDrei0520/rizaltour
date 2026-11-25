@@ -9,7 +9,7 @@ export default function MapScreen() {
   const { ready, content } = useApp();
   if (!ready) return null;
 
-  const { visitorInfo, scenes, destinations } = content;
+  const { visitorInfo, destinations } = content;
   const main = destinations[0];
 
   return (
@@ -55,7 +55,7 @@ export default function MapScreen() {
 function InfoRow({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
-      <FontAwesome name={icon as never} size={16} color={theme.green} />
+      <FontAwesome name={icon as never} size={16} color={theme.primary} />
       <View style={styles.infoCopy}>
         <Text style={styles.infoLabel}>{label}</Text>
         <Text style={styles.body}>{value}</Text>
@@ -65,7 +65,13 @@ function InfoRow({ icon, label, value }: { icon: string; label: string; value: s
 }
 
 const styles = StyleSheet.create({
-  mapMock: { height: 170, borderRadius: 14, overflow: "hidden", marginBottom: 12 },
+  mapMock: {
+    height: 420,
+    borderRadius: 26,
+    overflow: "hidden",
+    marginBottom: 12,
+    backgroundColor: "#e8ddc6",
+  },
   mapImage: { width: "100%", height: "100%" },
   pin: {
     position: "absolute",
@@ -79,10 +85,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-  pinText: { color: theme.green, fontSize: 11, fontWeight: "700" },
-  place: { fontSize: 17, fontWeight: "700", color: theme.green, marginBottom: 4 },
-  body: { fontSize: 13, color: theme.muted, lineHeight: 19 },
+  pinText: {
+    fontFamily: theme.fontBody,
+    color: theme.primary,
+    fontSize: 11,
+    fontWeight: "700",
+  },
+  place: {
+    fontFamily: theme.fontDisplay,
+    fontSize: 27,
+    fontWeight: "700",
+    color: theme.primary,
+    marginBottom: 4,
+  },
+  body: { fontFamily: theme.fontBody, fontSize: 13, color: theme.muted, lineHeight: 19 },
   infoRow: { flexDirection: "row", gap: 10, marginBottom: 12 },
   infoCopy: { flex: 1 },
-  infoLabel: { fontSize: 12, fontWeight: "700", color: theme.ink, marginBottom: 2 },
+  infoLabel: {
+    fontFamily: theme.fontBody,
+    fontSize: 12,
+    fontWeight: "700",
+    color: theme.ink,
+    marginBottom: 2,
+  },
 });

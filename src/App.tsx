@@ -211,6 +211,9 @@ function Home({
           <button className="primary light" onClick={() => setTab("tour")}>
             <Icon name="compass" /> Start 360° Tour
           </button>
+          <a className="apk-download" href="/downloads/rizal-virtual-tour.apk" download>
+            <Icon name="download" /> Download APK
+          </a>
         </div>
       </section>
       <section className="intro-row">
