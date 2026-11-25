@@ -11,7 +11,9 @@
     "typecheck": "tsc --noEmit",
     "cap:add:android": "cap add android",
     "cap:sync": "cap sync android",
-    "apk:debug": "vite build && cap sync android && node scripts/gradlew.mjs assembleDebug"
+    "apk:debug": "vite build && cap sync android && node scripts/gradlew.mjs assembleDebug",
+    "expo:start": "npm --prefix expo-app start",
+    "expo:typecheck": "npm --prefix expo-app run typecheck"
   },
   "dependencies": {
     "pannellum": "^2.5.7",
