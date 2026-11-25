@@ -63,7 +63,7 @@ May limang tab ang app:
 
 - **Home** — intro at starting point.
 - **Map** — location at directions.
-- **Tour** — directional tour ng gardens, sala, at dining room, may clickable hotspots.
+- **Tour** — tunay na 360° Pannellum view ng gardens, sala, at dining room, may clickable hotspots. Pwede pumili ng **Use classic view** kung gusto ng simple directional images.
 - **Quiz** — mga tanong mula sa tour.
 - **Progress** — history ng quiz at saved progress.
 
@@ -71,7 +71,7 @@ Sa **Home**, tap ang **Edit** para buksan ang Content studio. Pwede baguhin ang 
 
 ### 5. Mga tips at troubleshooting
 
-- Kung walang lumalabas na images, kailangan ng internet—nasa GitHub raw URLs ang images.
+- Kung walang lumalabas na images o 360° view, kailangan ng internet—nasa GitHub raw URLs ang images at Pannellum CDN ang viewer.
 - Kung lumang Expo Go ang phone, i-update ito para suportado ang SDK 58.
 - Kung may missing package, ulitin ang `npm install` sa loob ng `expo-app/`.
 - I-refresh ang app sa pamamagitan ng pag-pindot ng `r` sa terminal.

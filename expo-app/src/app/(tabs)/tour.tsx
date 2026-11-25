@@ -5,11 +5,13 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useApp } from "@/AppContext";
 import { assetUrl } from "@/content";
 import { Button, Screen, theme } from "@/components/ui";
+import { PanoView } from "@/components/PanoView";
 
 export default function TourScreen() {
   const { ready, content, panoScenes, progress, markExplored, finishTour } = useApp();
   const [index, setIndex] = useState(0);
   const [viewIndex, setViewIndex] = useState(0);
+  const [use360, setUse360] = useState(true);
 
   const scene = content.scenes[index];
   const views = useMemo(() => {
@@ -41,6 +43,17 @@ export default function TourScreen() {
     if (target >= 0) setIndex(target);
   };
 
+  const openSpot = (spot: (typeof spots)[number]) => {
+    if (spot.kind === "move" && spot.target) {
+      goToScene(spot.target);
+      return;
+    }
+    router.push({
+      pathname: "/spot/[id]",
+      params: { id: spot.id, sceneId: scene.id },
+    });
+  };
+
   const moveView = (direction: number) => {
     setViewIndex((current) => (current + direction + views.length) % views.length);
   };
@@ -60,46 +73,59 @@ export default function TourScreen() {
       </View>
 
       <View style={styles.stage}>
-        <Image source={{ uri: views[viewIndex]?.uri }} style={styles.image} resizeMode="cover" />
-        <View style={styles.stageShade} />
+        {scene.pano && use360 ? (
+          <PanoView
+            key={scene.id}
+            faces={scene.pano.faces}
+            preview={scene.coverUrl}
+            spots={spots}
+            onSpot={openSpot}
+          />
+        ) : (
+          <>
+            <Image
+              source={{ uri: views[viewIndex]?.uri }}
+              style={styles.image}
+              resizeMode="cover"
+            />
+            <View style={styles.stageShade} />
 
-        {spots.map((spot) => (
-          <Pressable
-            key={spot.id}
-            onPress={() =>
-              spot.kind === "move" && spot.target
-                ? goToScene(spot.target)
-                : router.push({
-                    pathname: "/spot/[id]",
-                    params: { id: spot.id, sceneId: scene.id },
-                  })
-            }
-            style={[styles.hotspot, { left: `${spot.x}%`, top: `${spot.y}%` }]}
-          >
-            <View style={styles.hotspotDot}>
-              <FontAwesome name={spot.kind === "move" ? "arrows" : "plus"} size={13} color="#fff" />
+            {spots.map((spot) => (
+              <Pressable
+                key={spot.id}
+                onPress={() => openSpot(spot)}
+                style={[styles.hotspot, { left: `${spot.x}%`, top: `${spot.y}%` }]}
+              >
+                <View style={styles.hotspotDot}>
+                  <FontAwesome
+                    name={spot.kind === "move" ? "arrows" : "plus"}
+                    size={13}
+                    color="#fff"
+                  />
+                </View>
+                <Text style={styles.hotspotLabel}>{spot.label}</Text>
+              </Pressable>
+            ))}
+
+            <Pressable onPress={() => moveView(-1)} style={[styles.arrow, styles.arrowLeft]}>
+              <FontAwesome name="chevron-left" size={22} color="#fff" />
+            </Pressable>
+            <Pressable onPress={() => moveView(1)} style={[styles.arrow, styles.arrowRight]}>
+              <FontAwesome name="chevron-right" size={22} color="#fff" />
+            </Pressable>
+
+            <View style={styles.viewLabel}>
+              <Text style={styles.viewText}>
+                {scene.pano
+                  ? `Direction ${viewIndex + 1}/${views.length}`
+                  : `Photo ${viewIndex + 1}/${views.length}`}
+              </Text>
+              <Text style={styles.viewCaption} numberOfLines={1}>
+                {views[viewIndex]?.label}
+              </Text>
             </View>
-            <Text style={styles.hotspotLabel}>{spot.label}</Text>
-          </Pressable>
-        ))}
-
-        <Pressable onPress={() => moveView(-1)} style={[styles.arrow, styles.arrowLeft]}>
-          <FontAwesome name="chevron-left" size={22} color="#fff" />
-        </Pressable>
-        <Pressable onPress={() => moveView(1)} style={[styles.arrow, styles.arrowRight]}>
-          <FontAwesome name="chevron-right" size={22} color="#fff" />
-        </Pressable>
-
-        <View style={styles.viewLabel}>
-          <Text style={styles.viewText}>
-            {scene.pano
-              ? `Direction ${viewIndex + 1}/${views.length}`
-              : `Photo ${viewIndex + 1}/${views.length}`}
-          </Text>
-          <Text style={styles.viewCaption} numberOfLines={1}>
-            {views[viewIndex]?.label}
-          </Text>
-        </View>
+          </>
+        )}
       </View>
 
       <View style={styles.controls}>
@@ -117,6 +143,16 @@ export default function TourScreen() {
           />
         </View>
 
+        {scene.pano && (
+          <View style={styles.toggleRow}>
+            <Button
+              label={use360 ? "Use classic view" : "Use 360° view"}
+              variant="ghost"
+              onPress={() => setUse360((current) => !current)}
+            />
+          </View>
+        )}
+
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chips}>
           {content.scenes.map((item, itemIndex) => (
             <Pressable
@@ -132,7 +168,9 @@ export default function TourScreen() {
         </ScrollView>
 
         <Text style={styles.hint}>
-          Tap the arrows to look around. Tap a marker to move or learn more.
+          {scene.pano && use360
+            ? "Drag to look around. Tap a marker to move or learn more."
+            : "Tap the arrows to look around. Tap a marker to move or learn more."}
         </Text>
 
         {allPanoSeen ? (
@@ -228,6 +266,7 @@ const styles = StyleSheet.create({
   viewCaption: { color: "#e8efe9", fontSize: 10, maxWidth: 260 },
   controls: { paddingHorizontal: 16, paddingTop: 12 },
   navRow: { flexDirection: "row", gap: 10 },
+  toggleRow: { marginTop: 10 },
   chips: { marginTop: 4 },
   chip: {
     paddingHorizontal: 12,
