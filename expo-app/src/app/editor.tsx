@@ -85,7 +85,10 @@ export default function EditorScreen() {
 
   return (
     <Screen>
-      <SectionTitle title="Content studio" subtitle="Edit the tour, then save to this device" />
+      <SectionTitle
+        title="Content studio"
+        subtitle="Edits stay on this device; the Vercel web app is view-only"
+      />
 
       <Card>
         <Field

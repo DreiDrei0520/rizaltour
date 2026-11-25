@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useContext, type ReactNode } from "react";
 import {
   destinations as defaultDestinations,
   questions as defaultQuestions,
@@ -64,8 +64,6 @@ export const defaultContent: AppContent = {
   visitorInfo: defaultVisitorInfo,
   questions: defaultQuestions,
 };
-
-const STORAGE_KEY = "rizal-tour-content-v1";
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
@@ -144,89 +142,22 @@ export function normalizeContent(value: unknown): AppContent {
   };
 }
 
-function loadContent(): AppContent {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? normalizeContent(JSON.parse(raw)) : defaultContent;
-  } catch {
-    return defaultContent;
-  }
-}
-
 type ContentContextValue = {
   content: AppContent;
   panoScenes: Scene[];
   storyScenes: Scene[];
   sceneSpots: Record<string, Spot[]>;
-  updateContent: (next: AppContent) => void;
-  patchSettings: (patch: Partial<AppSettings>) => void;
-  resetContent: () => void;
-  exportContent: () => string;
-  importContent: (json: string) => boolean;
 };
 
 const ContentContext = createContext<ContentContextValue | null>(null);
 
 export function ContentProvider({ children }: { children: ReactNode }) {
-  const [content, setContent] = useState<AppContent>(loadContent);
-
-  const updateContent = useCallback((next: AppContent) => {
-    const normalized = normalizeContent(next);
-    setContent(normalized);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-    } catch {}
-  }, []);
-
-  const patchSettings = useCallback((patch: Partial<AppSettings>) => {
-    setContent((current) => {
-      const next = normalizeContent({ ...current, settings: { ...current.settings, ...patch } });
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        // Ignore storage failures.
-      }
-      return next;
-    });
-  }, []);
-
-  const resetContent = useCallback(() => {
-    setContent(defaultContent);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // Ignore storage failures.
-    }
-  }, []);
-
-  const exportContent = useCallback(() => JSON.stringify(content, null, 2), [content]);
-
-  const importContent = useCallback(
-    (json: string) => {
-      try {
-        updateContent(JSON.parse(json));
-        return true;
-      } catch {
-        return false;
-      }
-    },
-    [updateContent],
-  );
-
-  const value = useMemo<ContentContextValue>(() => {
-    const panoScenes = content.scenes.filter((scene) => Boolean(scene.pano));
-    return {
-      content,
-      panoScenes,
-      storyScenes: content.scenes.filter((scene) => !scene.pano),
-      sceneSpots: content.sceneSpots,
-      updateContent,
-      patchSettings,
-      resetContent,
-      exportContent,
-      importContent,
-    };
-  }, [content, updateContent, patchSettings, resetContent, exportContent, importContent]);
+  const value: ContentContextValue = {
+    content: defaultContent,
+    panoScenes: defaultContent.scenes.filter((scene) => Boolean(scene.pano)),
+    storyScenes: defaultContent.scenes.filter((scene) => !scene.pano),
+    sceneSpots: defaultContent.sceneSpots,
+  };
 
   return <ContentContext.Provider value={value}>{children}</ContentContext.Provider>;
 }

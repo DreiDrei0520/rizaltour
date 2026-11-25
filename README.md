@@ -13,6 +13,8 @@ npm run dev
 npm run build
 ```
 
+The deployed web app is **view-only**: questions, details, and other tour content are not editable there. Editing is available only in the Expo Go app.
+
 `vercel.json` configures Vercel to install with pnpm, run `npm run build`, and serve `dist/`.
 
 ## Expo Go guide

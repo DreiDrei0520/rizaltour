@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import "pannellum";
 import "pannellum/build/pannellum.css";
 import { buildQuiz, useContent } from "./content";
-import ContentEditor from "./ContentEditor";
 import type { Pano, Photo, Scene, Spot } from "./data";
 
 type Tab = "home" | "map" | "tour" | "quiz" | "progress";
@@ -181,12 +180,10 @@ function Home({
   setTab,
   progress,
   notify,
-  openEditor,
 }: {
   setTab: (tab: Tab) => void;
   progress: Progress;
   notify: (message: string) => void;
-  openEditor: () => void;
 }) {
   const { content, panoScenes } = useContent();
   const { settings, destinations } = content;
@@ -200,9 +197,6 @@ function Home({
           <p className="kicker">{settings.kicker}</p>
           <h1>{settings.appName}</h1>
         </div>
-        <button className="avatar editor-avatar" onClick={openEditor} aria-label="Edit content">
-          <Icon name="edit" size={18} />
-        </button>
         <div className="avatar" aria-label="Student profile">
           JR
         </div>
@@ -902,12 +896,10 @@ function Quiz({
   setTab,
   progress,
   updateProgress,
-  openEditor,
 }: {
   setTab: (tab: Tab) => void;
   progress: Progress;
   updateProgress: (p: Progress) => void;
-  openEditor: () => void;
 }) {
   const { content, panoScenes } = useContent();
   const [attempt, setAttempt] = useState(0);
@@ -950,10 +942,7 @@ function Quiz({
         {quizTop}
         <div className="empty-state quiz-empty">
           <h1>No questions yet</h1>
-          <p>Add questions in the Content studio to start the quiz.</p>
-          <button className="primary full" onClick={openEditor}>
-            Open Content studio
-          </button>
+          <p>The quiz will be available once questions are published.</p>
         </div>
       </main>
     );
@@ -1084,12 +1073,10 @@ function ProgressPage({
   setTab,
   progress,
   reset,
-  openEditor,
 }: {
   setTab: (tab: Tab) => void;
   progress: Progress;
   reset: () => void;
-  openEditor: () => void;
 }) {
   const { content, panoScenes } = useContent();
   const [confirm, setConfirm] = useState(false);
@@ -1116,18 +1103,13 @@ function ProgressPage({
         eyebrow="Your learning journey"
         title="My Progress"
         action={
-          <div className="editor-mini-actions">
-            <button className="icon-button pale" onClick={openEditor} aria-label="Edit content">
-              <Icon name="edit" size={18} />
-            </button>
-            <button
-              className="icon-button pale"
-              onClick={() => setConfirm(true)}
-              aria-label="Reset progress"
-            >
-              <Icon name="reset" />
-            </button>
-          </div>
+          <button
+            className="icon-button pale"
+            onClick={() => setConfirm(true)}
+            aria-label="Reset progress"
+          >
+            <Icon name="reset" />
+          </button>
         }
       />
       <section className="progress-hero">
@@ -1316,7 +1298,6 @@ function Onboarding({ close }: { close: () => void }) {
 export default function App() {
   const { content } = useContent();
   const [tab, setTab] = useState<Tab>("home");
-  const [editorOpen, setEditorOpen] = useState(false);
   const [progress, setProgress] = useState<Progress>(() => {
     try {
       const saved =
@@ -1335,7 +1316,6 @@ export default function App() {
   });
   const [onboarding, setOnboarding] = useState(() => !localStorage.getItem("rizal-onboarded"));
   const [toast, setToast] = useState<string | null>(null);
-  const openEditor = () => setEditorOpen(true);
   const updateProgress = (next: Progress) => {
     setProgress(next);
     localStorage.setItem("rizal-tour-progress", JSON.stringify(next));
@@ -1350,34 +1330,27 @@ export default function App() {
     const id = window.setTimeout(() => setToast(null), 2600);
     return () => window.clearTimeout(id);
   }, [toast]);
-  const screen = editorOpen ? (
-    <ContentEditor close={() => setEditorOpen(false)} notify={notify} />
-  ) : tab === "home" ? (
-    <Home setTab={setTab} progress={progress} notify={notify} openEditor={openEditor} />
-  ) : tab === "map" ? (
-    <CulturalMap setTab={setTab} />
-  ) : tab === "tour" ? (
-    <Tour setTab={setTab} progress={progress} updateProgress={updateProgress} />
-  ) : tab === "quiz" ? (
-    <Quiz
-      setTab={setTab}
-      progress={progress}
-      updateProgress={updateProgress}
-      openEditor={openEditor}
-    />
-  ) : (
-    <ProgressPage
-      setTab={setTab}
-      progress={progress}
-      reset={() => updateProgress(initialProgress)}
-      openEditor={openEditor}
-    />
-  );
+  const screen =
+    tab === "home" ? (
+      <Home setTab={setTab} progress={progress} notify={notify} />
+    ) : tab === "map" ? (
+      <CulturalMap setTab={setTab} />
+    ) : tab === "tour" ? (
+      <Tour setTab={setTab} progress={progress} updateProgress={updateProgress} />
+    ) : tab === "quiz" ? (
+      <Quiz setTab={setTab} progress={progress} updateProgress={updateProgress} />
+    ) : (
+      <ProgressPage
+        setTab={setTab}
+        progress={progress}
+        reset={() => updateProgress(initialProgress)}
+      />
+    );
   return (
     <div className="app-shell">
       {screen}
-      {!editorOpen && tab !== "tour" && <BottomNav active={tab} setTab={setTab} />}
-      {onboarding && !editorOpen && <Onboarding close={closeOnboarding} />}
+      {tab !== "tour" && <BottomNav active={tab} setTab={setTab} />}
+      {onboarding && <Onboarding close={closeOnboarding} />}
       {toast && (
         <div className="toast" role="status">
           {toast}
