@@ -217,14 +217,6 @@ function Home({
           <button className="primary light" onClick={() => setTab("tour")}>
             <Icon name="compass" /> Start 360° Tour
           </button>
-          <a
-            className="apk-download"
-            href={settings.apkDownloadUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <Icon name="download" size={16} /> Download Android APK
-          </a>
         </div>
       </section>
       <section className="intro-row">

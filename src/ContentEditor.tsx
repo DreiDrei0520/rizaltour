@@ -2,14 +2,13 @@ import { useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import { useContent, type AppContent, type Destination, type VisitorInfo } from "./content";
 import type { Question, Scene } from "./data";
 
-type Tab = "questions" | "stops" | "info" | "settings" | "mobile";
+type Tab = "questions" | "stops" | "info" | "settings";
 
 const tabs: { id: Tab; label: string }[] = [
   { id: "questions", label: "Questions" },
   { id: "stops", label: "Tour stops" },
   { id: "info", label: "Information" },
   { id: "settings", label: "Quiz & app" },
-  { id: "mobile", label: "APK" },
 ];
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
@@ -534,50 +533,6 @@ export default function ContentEditor({
               />{" "}
               Require the 360° tour before the quiz
             </label>
-          </article>
-        </section>
-      )}
-
-      {tab === "mobile" && (
-        <section className="editor-section">
-          <article className="editor-card">
-            <div className="editor-card-head">
-              <strong>Download as an Android app</strong>
-            </div>
-            <p className="editor-note">
-              This project is a web app wrapped with Capacitor so the same screens can run as an
-              APK.
-            </p>
-            <Field label="Download URL" hint="Change this if you host the APK somewhere else.">
-              <input
-                value={content.settings.apkDownloadUrl}
-                onChange={(e) => patchSettings({ apkDownloadUrl: e.target.value })}
-              />
-            </Field>
-            <a
-              className="primary full"
-              href={content.settings.apkDownloadUrl}
-              target="_blank"
-              rel="noreferrer"
-              style={{ textDecoration: "none" }}
-            >
-              Download APK
-            </a>
-            <ol className="editor-steps">
-              <li>
-                The <strong>Build Android APK</strong> workflow publishes the latest build to this
-                repo’s latest release.
-              </li>
-              <li>Open the link above on your Android phone and install the downloaded APK.</li>
-              <li>
-                Open the Content studio in the app and use <strong>Import JSON</strong> to load your
-                exported questions and details.
-              </li>
-            </ol>
-            <p className="editor-note">
-              For a local build you need Android Studio, Java 21, and the Android SDK, then run:{" "}
-              <code>npm run apk:debug</code>.
-            </p>
           </article>
         </section>
       )}

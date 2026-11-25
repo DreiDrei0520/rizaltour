@@ -49,7 +49,6 @@ const emptyContent: AppContent = {
     shuffleChoices: true,
     requireTour: true,
     passingPercent: 70,
-    apkDownloadUrl: "",
   },
   destinations: [],
   scenes: [],

@@ -25,7 +25,6 @@ export type AppSettings = {
   shuffleChoices: boolean;
   requireTour: boolean;
   passingPercent: number;
-  apkDownloadUrl: string;
 };
 
 export type Destination = (typeof destinations)[number];
@@ -65,8 +64,6 @@ const defaultSettings: AppSettings = {
   shuffleChoices: true,
   requireTour: true,
   passingPercent: 70,
-  apkDownloadUrl:
-    "https://github.com/DreiDrei0520/rizaltour/releases/latest/download/rizal-virtual-tour.apk",
 };
 
 export const defaultContent: AppContent = {
@@ -151,7 +148,6 @@ export function normalizeContent(value: unknown): AppContent {
       shuffleChoices: bool(rawSettings.shuffleChoices, true),
       requireTour: bool(rawSettings.requireTour, true),
       passingPercent: int(rawSettings.passingPercent, 70, 0, 100),
-      apkDownloadUrl: str(rawSettings.apkDownloadUrl, defaultSettings.apkDownloadUrl),
     },
     destinations: validDestinations,
     scenes: validScenes,

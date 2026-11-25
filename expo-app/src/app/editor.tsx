@@ -127,11 +127,6 @@ export default function EditorScreen() {
           multiline
         />
         <Field
-          label="APK download URL"
-          value={settings.apkDownloadUrl}
-          onChange={(value) => patchSetting("apkDownloadUrl", value)}
-        />
-        <Field
           label="Questions per quiz (0 = all)"
           value={String(settings.questionsPerQuiz)}
           onChange={(value) =>

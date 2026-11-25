@@ -66,11 +66,6 @@ export default function HomeScreen() {
           <Text style={styles.heroTitle}>{settings.heroTitle}</Text>
           <Text style={styles.heroText}>{settings.heroText}</Text>
           <Button label="Start 360° Tour" onPress={() => router.push("/tour")} />
-          <Button
-            label="Download Android APK"
-            variant="ghost"
-            onPress={() => void Alert.alert("APK", settings.apkDownloadUrl)}
-          />
         </View>
       </View>
 
